@@ -1,0 +1,20 @@
+#not working
+
+import machine
+import utime
+
+
+buzzer_pin = machine.Pin(4, machine.Pin.OUT)
+
+
+# active buzzer test
+while True:
+    #example to test buzzer, only
+    # Basic if statement
+    x = 3
+    y = 10
+
+if x < y:
+        buzzer_pin.high()
+else:
+        buzzer_pin.low()
