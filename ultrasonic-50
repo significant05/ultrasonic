@@ -1,0 +1,43 @@
+import machine
+import utime
+
+# Define GPIO pins for ultrasonic distance sensor and buzzer
+trigger_pin = machine.Pin(2, machine.Pin.OUT)
+echo_pin = machine.Pin(3, machine.Pin.IN)
+buzzer_pin = machine.Pin(4, machine.Pin.OUT)
+
+# Define constants for the depth of the water reservoir and the distance at which to sound the buzzer
+reservoir_depth_inches = 9.5
+warning_distance_inches = 2
+
+# Function to measure distance using the ultrasonic sensor
+def measure_distance():
+    # Send a 10us pulse on the trigger pin to start the measurement
+    trigger_pin.high()
+    utime.sleep_us(10)
+    trigger_pin.low()
+
+    # Wait for the echo pin to go high, then measure the time it stays high
+    while not echo_pin.value():
+        pass
+    start_time = utime.ticks_us()
+    while echo_pin.value():
+        pass
+    end_time = utime.ticks_us()
+
+    # Calculate the distance based on the time it took for the echo pulse to return
+    duration_us = end_time - start_time
+    distance_inches = duration_us / 148.0  # Speed of sound in inches per microsecond is 1/148
+
+    return distance_inches
+
+# Main loop to measure distance and sound buzzer if water level is too high
+while True:
+    distance_inches = measure_distance()
+    if distance_inches <= warning_distance_inches:
+        buzzer_pin.high()
+    else:
+        buzzer_pin.low()
+
+    # Wait a short time before measuring distance again
+    utime.sleep(0.1)
